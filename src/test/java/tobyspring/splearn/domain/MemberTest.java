@@ -1,5 +1,6 @@
 package tobyspring.splearn.domain;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -7,26 +8,35 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class MemberTest {
-    @Test
-    @DisplayName("회원을 생성하면 초기 상태는 가입대기(PENDING)이다.")
-    void createMember() {
-        var member = new Member("toby@splearn.app", "Toby", "secret");
+    Member member;
+    PasswordEncoder passwordEncoder;
 
-        assertThat(member.getStatus()).isEqualTo(MemberStatus.PENDING);
+    @BeforeEach
+    void setUp() {
+        passwordEncoder = new PasswordEncoder() {
+            @Override
+            public String encode(String password) {
+                return password.toUpperCase();
+            }
+
+            @Override
+            public boolean matches(String password, String passwordHash) {
+                return encode(password).equals(passwordHash);
+            }
+        };
+
+        member = Member.create("toby@splearn.app", "Toby", "secret", passwordEncoder);
     }
 
     @Test
-    @DisplayName("회원 가입 시 null 값은 허용되지 않는다. ")
-    void constructorNullCheck() {
-        assertThatThrownBy(() -> new Member("toby@splearn.app", null, "secret"))
-                .isInstanceOf(NullPointerException.class);
+    @DisplayName("회원을 생성하면 초기 상태는 가입대기(PENDING)이다.")
+    void createMember() {
+        assertThat(member.getStatus()).isEqualTo(MemberStatus.PENDING);
     }
 
     @Test
     @DisplayName("회원을 activate 하면 가입 완료 상태가 된다.")
     void activate() {
-        var member = new Member("toby@splearn.app", "Toby", "secret");
-
         member.activate();
 
         assertThat(member.getStatus()).isEqualTo(MemberStatus.ACTIVE);
@@ -35,8 +45,6 @@ class MemberTest {
     @Test
     @DisplayName("이미 가입이 완료된 경우 에러가 발생한다. (PENDING 상태가 아닌 경우)")
     void activateFail() {
-        var member = new Member("toby@splearn.app", "Toby", "secret");
-
         member.activate();
 
         assertThatThrownBy(member::activate).isInstanceOf(IllegalStateException.class);
@@ -45,7 +53,6 @@ class MemberTest {
     @Test
     @DisplayName("회원을 deactivate 하면 탈퇴 상태가 된다.")
     void deactivate() {
-        var member = new Member("toby@splearn.app", "Toby", "secret");
         member.activate();
 
         member.deactivate();
@@ -55,13 +62,30 @@ class MemberTest {
 
     @Test
     void deactivateFail() {
-        var member = new Member("toby@splearn.app", "Toby", "secret");
-
         assertThatThrownBy(member::deactivate).isInstanceOf(IllegalStateException.class);
 
         member.activate();
         member.deactivate();
 
         assertThatThrownBy(member::deactivate).isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void varifyPassword() {
+        assertThat(member.verifyPassword("secret", passwordEncoder)).isTrue();
+        assertThat(member.verifyPassword("hello", passwordEncoder)).isFalse();
+    }
+
+    @Test
+    void changeNickname() {
+        assertThat(member.getNickname()).isEqualTo("Toby");
+        member.changeNickname("charlie");
+        assertThat(member.getNickname()).isEqualTo("charlie");
+    }
+
+    @Test
+    void changePassword() {
+        member.changePassword("verysecret", passwordEncoder);
+        assertThat(member.verifyPassword("verysecret", passwordEncoder)).isTrue();
     }
 }
