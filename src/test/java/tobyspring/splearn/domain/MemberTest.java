@@ -25,12 +25,12 @@ class MemberTest {
             }
         };
 
-        member = Member.create(new MemberCreateRequest("toby@splearn.app", "Toby", "secret"), passwordEncoder);
+        member = Member.register(new MemberRegisterRequest("toby@splearn.app", "Toby", "secret"), passwordEncoder);
     }
 
     @Test
     @DisplayName("회원을 생성하면 초기 상태는 가입대기(PENDING)이다.")
-    void createMember() {
+    void registerMember() {
         assertThat(member.getStatus()).isEqualTo(MemberStatus.PENDING);
     }
 
@@ -101,9 +101,9 @@ class MemberTest {
     @Test
     void invalidEmail() {
         assertThatThrownBy(() ->
-                Member.create(new MemberCreateRequest("invalid email", "Toby", "secret"), passwordEncoder)
+                Member.register(new MemberRegisterRequest("invalid email", "Toby", "secret"), passwordEncoder)
         ).isInstanceOf(IllegalArgumentException.class);
 
-        Member.create(new MemberCreateRequest("toby@splearn.app", "Toby", "secret"), passwordEncoder);
+        Member.register(new MemberRegisterRequest("toby@splearn.app", "Toby", "secret"), passwordEncoder);
     }
 }
