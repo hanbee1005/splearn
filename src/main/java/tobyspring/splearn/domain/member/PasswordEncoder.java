@@ -1,4 +1,4 @@
-package tobyspring.splearn.domain;
+package tobyspring.splearn.domain.member;
 
 /**
  * PasswordEncoder 는 특성이 required application 에 해당 하지만
