@@ -16,12 +16,7 @@ import static org.springframework.util.Assert.state;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @NaturalIdCache // 영속성 컨텍스트 내에서 캐시 해서 읽기할 때 캐시 사용 가능 (즉, 이메일로 조회 시 캐시 사용 가능)
-public class Member {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Embedded
+public class Member extends AbstractEntity {
     @NaturalId
     private Email email;
 
@@ -29,7 +24,6 @@ public class Member {
 
     private String passwordHash;
 
-    @Enumerated(EnumType.STRING)
     private MemberStatus status;
 
     public static Member register(MemberRegisterRequest createRequest, PasswordEncoder passwordEncoder) {
