@@ -73,6 +73,11 @@ class MemberRegisterManualTest {
         public Optional<Member> findByEmail(Email email) {
             return Optional.empty();
         }
+
+        @Override
+        public Optional<Member> findById(Long memberId) {
+            return Optional.empty();
+        }
     }
 
     static class EmailSenderStub implements EmailSender {
