@@ -29,6 +29,6 @@ record MemberFinderTest(MemberFinder memberFinder, MemberRegister memberRegister
 
     @Test
     void findFail() {
-        assertThatThrownBy(() -> memberFinder.find(999L)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> {var ignored = memberFinder.find(999L);}).isInstanceOf(IllegalArgumentException.class);
     }
 }

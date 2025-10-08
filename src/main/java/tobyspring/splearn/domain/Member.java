@@ -13,7 +13,7 @@ import static org.springframework.util.Assert.state;
 
 @Entity
 @Getter
-@ToString
+@ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @NaturalIdCache // 영속성 컨텍스트 내에서 캐시 해서 읽기할 때 캐시 사용 가능 (즉, 이메일로 조회 시 캐시 사용 가능)
 public class Member extends AbstractEntity {
