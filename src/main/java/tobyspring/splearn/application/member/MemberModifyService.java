@@ -1,6 +1,8 @@
 package tobyspring.splearn.application.member;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -50,8 +52,22 @@ public class MemberModifyService implements MemberRegister {
     @Override
     public Member updateInfo(Long memberId, MemberInfoUpdateRequest updateRequest) {
         Member member = memberFinder.find(memberId);
+
+        checkDuplicateProfile(member, updateRequest.profileAddress());
+
         member.updateInfo(updateRequest);
         return memberRepository.save(member);
+    }
+
+    private void checkDuplicateProfile(Member member, String profileAddress) {
+        if (profileAddress.isEmpty()) return;
+
+        Profile currentProfile = member.getDetail().getProfile();
+        if (currentProfile != null && currentProfile.address().equals(profileAddress)) return;
+
+        if (memberRepository.findByProfile(new Profile(profileAddress)).isPresent()) {
+            throw new DuplicateProfileException("이미 존재하는 프로필 주소입니다: " + profileAddress);
+        }
     }
 
     private void sendWelcomeEmail(Member member) {
