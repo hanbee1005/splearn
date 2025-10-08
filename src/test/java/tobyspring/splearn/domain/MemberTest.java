@@ -64,15 +64,15 @@ class MemberTest {
 
     @Test
     void varifyPassword() {
-        assertThat(member.verifyPassword("secret", passwordEncoder)).isTrue();
+        assertThat(member.verifyPassword("longsecret", passwordEncoder)).isTrue();
         assertThat(member.verifyPassword("hello", passwordEncoder)).isFalse();
     }
 
     @Test
     void changeNickname() {
-        assertThat(member.getNickname()).isEqualTo("Toby");
-        member.changeNickname("charlie");
-        assertThat(member.getNickname()).isEqualTo("charlie");
+        assertThat(member.getNickname()).isEqualTo("Charlie");
+        member.changeNickname("Charlie2");
+        assertThat(member.getNickname()).isEqualTo("Charlie2");
     }
 
     @Test
