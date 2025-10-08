@@ -11,12 +11,11 @@ import tobyspring.splearn.domain.MemberFixture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
 @Import(SplearnTestConfiguration.class)
-public record MemberFinderTest(MemberFinder memberFinder, MemberRegister memberRegister, EntityManager entityManager) {
+record MemberFinderTest(MemberFinder memberFinder, MemberRegister memberRegister, EntityManager entityManager) {
     @Test
     void find() {
         Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
