@@ -1,4 +1,4 @@
 package tobyspring.learningtest.archunit.application;
 
-public class MyService2 {
+class MyService2 {
 }
